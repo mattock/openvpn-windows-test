@@ -147,6 +147,9 @@ Function Test-Service {
 
     Start-Service OpenVPNService
     Check-Connectivity "openvpnserv2"
+    # Test if openvpn.exe is respawned correctly on forced kill
+    Stop-OpenVPN
+    Check-connectivity "openvpnserv2-respawn"
     Stop-Service OpenVPNService
 
     foreach ($move in $moved) {
