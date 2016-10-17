@@ -66,7 +66,7 @@ Verify-Path $Config
 Function Stop-Generic ([string]$processname) {
     $processes = (Get-Process|Where-Object { $_.ProcessName -eq "${processname}" })
     foreach ($process in $processes) {
-        Stop-Process $process.Id
+        Stop-Process $process.Id -Force
     }
 }
 
