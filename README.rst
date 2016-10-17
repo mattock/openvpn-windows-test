@@ -31,19 +31,9 @@ The main script tests only one VPN connection:
   
   Example: .\Test-Openvpn -Config "C:\Program Files\OpenVPN\config\company.ovpn" -Ping 192.168.40.7 -TestCmdexe -TestService -TestGui
 
-To test several connections in a row create a wrapper such as this and name it
-run.ps1:
-::
-
-  # run.ps1
-  $configdir = "C:\Program Files\OpenVPN\config"
-  
-  .\Test-Openvpn.ps1 -TestCmdexe -TestGui -TestService -Config "${configdir}\company.ovpn" -Ping 10.5.18.8
-  .\Test-Openvpn.ps1 -TestCmdexe -TestGui -TestService -Config "${configdir}\university.ovpn" -Ping 10.19.199.3
-  .\Test-Openvpn.ps1 -TestCmdexe -TestGui -TestService -Config "${configdir}\home.ovpn" -Ping 192.168.7.2
-
-Now you can verify that your particular version of OpenVPN works with all of
-your VPN connections.
+To test several connections in a row copy `run-sample.ps1 <run-sample.ps1>`_ to run.ps1 and adapt
+it to your needs. Now you can verify that your particular version of OpenVPN
+works with all of your VPN connections.
 
 To verify that the connections do not succeed because of a bug or by accident,
 -Ping to a fake IP that can only fail.
