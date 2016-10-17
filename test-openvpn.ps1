@@ -2,7 +2,7 @@
     [string]$Openvpn,
     [string]$Gui,
     [string]$Config,
-    [string]$Ping,
+    [array]$Ping,
     [switch]$TestCmdexe,
     [switch]$TestService,
     [switch]$TestGui,
@@ -16,7 +16,7 @@ Function Show-Usage {
     Write-Host "   -Openvpn     Path to openvpn.exe (defaults to C:\Program Files\OpenVPN\bin\openvpn.exe)"
     Write-Host "   -Gui         Path to openvpn-gui.exe (defaults to C:\Program Files\OpenVPN\bin\openvpn-gui.exe)"
     Write-Host "   -Config      Path to the OpenVPN configuration file"
-    Write-Host "   -Ping        Target host inside VPN to ping (should succeed)"
+    Write-Host "   -Ping        Target host(s) inside VPN to ping (should succeed). Separate multiple entries with commas."
     Write-Host "   -Suspend     Test suspend and resume [UNIMPLEMENTED]"
     Write-Host "   -TestCmdexe  Test connection from the command-line"
     Write-Host "   -TestGui     Test OpenVPN-GUI"
@@ -91,19 +91,21 @@ Function Clean-Up {
     Stop-Gui
 }
 
-Function Check-Connectivity ([string]$test_type) {
+Function Check-Connectivity ([string]$test_type, [array]$ping) {
 
     Start-Sleep -Seconds 10
 
-    $connected = (Test-Connection -Computername $Ping -Count 10 -Delay 1 -Quiet)
+    foreach ($target in $ping) {
+        $connected = (Test-Connection -Computername $target -Count 10 -Delay 1 -Quiet)
 
-    if ($connected) {
-        $result = "SUCCESS"
-    } else {
-        $result = "FAILURE"
+        if ($connected) {
+            $result = "SUCCESS"
+        } else {
+            $result = "FAILURE"
+        }
+
+        Write-Host "${Configname} ${test_type} connection to ${target}: ${result}"
     }
-
-    Write-Host "${Configname} ${test_type} test: ${result}"
 }
 
 Function Test-Cmdexe {
@@ -118,7 +120,7 @@ Function Test-Cmdexe {
     $pidfile = "${cwd}\${Configname}.pid"
     Set-Content -Path "${bat}" -Value """${Openvpn}"" --config ""${config}"" --writepid ""${pidfile}"" --cd ""${Configdir}"" & exit"
     Start-Process -FilePath $env:ComSpec -ArgumentList "/c", "start", "${bat}"
-    Check-Connectivity "cmdexe"
+    Check-Connectivity "cmdexe" $ping
     Stop-Openvpn
     Remove-Item "${pidfile}"
     Remove-Item "${bat}"
