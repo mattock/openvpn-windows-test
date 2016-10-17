@@ -27,8 +27,8 @@ Function Show-Usage {
 }
 
 Function Verify-Path ([string]$mypath) {
-    if (! (Test-Path $mypath)) {
-        Write-Host "ERROR: config file ${mypath} not found!"
+    if (! (Test-Path $mypath -PathType leaf) ) {
+        Write-Host "ERROR: ${mypath} not found or not a file!"
         Exit 1
     }
 }
