@@ -1,12 +1,15 @@
 openvpn-windows-test
 ====================
 
-Powershell scripts for testing OpenVPN on Windows. The test-openvpn.ps1 script can test OpenVPN
-from the command-line (cmd.exe), using OpenVPN-GUI and with openvpnserv2.
-Success and failure are based on simple ping tests.
+Powershell scripts for testing OpenVPN on Windows. The Test-Openvpn.ps1 script
+can test OpenVPN from the command-line (cmd.exe), using OpenVPN-GUI and with
+openvpnserv2. Success and failure are based on simple ping tests.
 
 A typical use-case for these scripts is smoke-testing an installer prior to a
 major release.
+
+Note that Windows may prompt for user feedback at certain points, e.g. to allow
+connections to remote servers or to allow killing of an openvpn.exe process.
 
 Usage
 =====
@@ -44,6 +47,24 @@ your VPN connections.
 
 To verify that the connections do not succeed because of a bug or by accident,
 -Ping to a fake IP that can only fail.
+
+Scope of the tests
+==================
+
+OpenVPN inside cmd.exe
+----------------------
+
+Connect -> ping test -> disconnect
+
+OpenVPN GUI
+-----------
+
+Connect -> ping test -> disconnect
+
+Openvpnserv2
+------------
+
+Connect -> ping test -> kill openvpn -> openvpnserv2 restart openvpn -> ping test -> disconnect
 
 Warnings
 ========
