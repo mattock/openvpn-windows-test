@@ -144,7 +144,7 @@ Function Test-Cmdexe {
 
 Function Test-Gui {
     & $gui --connect "${configname}"
-    Check-Connectivity "gui"
+    Check-Connectivity "gui" $ping
     Stop-Openvpn
     Stop-Gui
 
@@ -164,10 +164,10 @@ Function Test-Service {
     }
 
     Start-Service OpenVPNService
-    Check-Connectivity "openvpnserv2"
+    Check-Connectivity "openvpnserv2" $ping
     # Test if openvpn.exe is respawned correctly on forced kill
-    Stop-OpenVPN
-    Check-connectivity "openvpnserv2-respawn"
+    Stop-Openvpn
+    Check-connectivity "openvpnserv2-respawn" $ping
     Stop-Service OpenVPNService
 
     foreach ($move in $moved) {

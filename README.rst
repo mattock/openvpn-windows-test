@@ -16,14 +16,14 @@ Usage
 
 The main script tests only one VPN connection:
 ::
-  Usage: Test-Openvpn.ps1 -Config <openvpn-config-file> -Ping <host> [-Openvpn <openvpn-exe>] [-Gui <openvpn-gui-exe>] [-TestCmdexe] [-TestService] [-TestGui] [-Help]
+  Usage: Test-Openvpn.ps1 -Config <openvpn-config-file> -Ping <hosts> [-Openvpn <openvpn-exe>] [-Gui <openvpn-gui-exe>] [-TestCmdexe] [-TestService] [-TestGui] [-Help]
   
   Parameters:
      -Openvpn     Path to openvpn.exe (defaults to C:\Program Files\OpenVPN\bin\openvpn.exe)
      -Gui         Path to openvpn-gui.exe (defaults to C:\Program Files\OpenVPN\bin\openvpn-gui.exe)
      -Config      Path to the OpenVPN configuration file
-     -Ping        Target host inside VPN to ping (should succeed)
-     -Suspend     Test suspend and resume [UNIMPLEMENTED]
+     -Ping        Target host(s) inside VPN to ping (should succeed). Separate multiple entries
+                  with commas.
      -TestCmdexe  Test connection from the command-line
      -TestGui     Test OpenVPN-GUI
      -TestService Test openvpnserv2.exe
