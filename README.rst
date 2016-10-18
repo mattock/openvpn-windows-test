@@ -26,7 +26,7 @@ The main script tests only one VPN connection:
   
   Example: .\Test-Openvpn -Config "C:\Program Files\OpenVPN\config\company.ovpn" -Ping 192.168.40.7 -TestCmdexe -TestService -TestGui
 
- To verify that the connections do not succeed because of a bug or by accident,
+To verify that the connections do not succeed because of a bug or by accident,
 -Ping a fake IP that can only fail.
 
 Note that Windows may prompt for user feedback at certain points, e.g. to allow
