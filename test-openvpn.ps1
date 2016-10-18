@@ -112,7 +112,7 @@ Function Check-Connectivity ([string]$test_type, [array]$ping) {
     Start-Sleep -Seconds 10
 
     foreach ($target in $ping) {
-        $connected = (Test-Connection -Computername $target -Count 10 -Delay 1 -Quiet)
+        $connected = (Test-Connection -Computername $target -Quiet)
 
         if ($connected) {
             $result = "SUCCESS"
