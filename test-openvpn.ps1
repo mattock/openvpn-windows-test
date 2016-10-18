@@ -70,6 +70,22 @@ Function Stop-Generic ([string]$processname) {
     }
 }
 
+Function Stop-Management {
+    $socket = New-Object System.Net.Sockets.TcpClient("127.0.0.1", "58581")
+
+    if ($socket) {
+        $Stream = $Socket.GetStream()
+        $Writer = New-Object System.IO.StreamWriter($Stream)
+
+        Start-Sleep -Seconds 1
+        $writer.WriteLine("signal SIGTERM")
+        $writer.Flush()
+        Start-Sleep -Seconds 5
+    } else {
+        Stop-Generic "openvpn"
+    }
+}
+
 Function Stop-Openvpn {
     Stop-Generic "openvpn"
 }
@@ -87,7 +103,7 @@ Function Stop-Openvpnservice {
 Function Clean-Up {
     # Kill all instances of (stock) OpenVPN
     Stop-Openvpnservice
-    Stop-Openvpn
+    Stop-Generic "openvpn"
     Stop-Gui
 }
 
@@ -121,7 +137,7 @@ Function Test-Cmdexe {
     Set-Content -Path "${bat}" -Value """${Openvpn}"" --config ""${config}"" --writepid ""${pidfile}"" --cd ""${Configdir}"" & exit"
     Start-Process -FilePath $env:ComSpec -ArgumentList "/c", "start", "${bat}"
     Check-Connectivity "cmdexe" $ping
-    Stop-Openvpn
+    Stop-Management
     Remove-Item "${pidfile}"
     Remove-Item "${bat}"
 }
