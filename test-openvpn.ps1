@@ -95,8 +95,19 @@ Function Stop-Gui {
 }
 
 Function Stop-Openvpnservice {
-    Stop-Service OpenVPNService
-    Stop-Service OpenVPNServiceLegacy
+    ('OpenVPNService','OpenVPNServiceLegacy') | % {
+    [String] $s = $_
+    [Int] $c = (get-service).where{ $_.Name -eq $s}.Count
+      if($c -gt 0){
+        # Service exists, stop it
+        Stop-Service $s -Force
+        do {
+         ('Stopping {0} ...' -f $s)
+         $c = (Get-Service).where({ ($_.Name -eq $s) -and ($_.status -eq 'Stopped') }).Count
+         sleep -Seconds 1
+        } until ($c -eq 1)
+      }
+    }
 }
 
 # Stop all openvpn-related processes
