@@ -5,12 +5,13 @@
     [array]$Ping,
     [switch]$TestCmdexe,
     [switch]$TestService,
+    [switch]$TestRespawn,
     [switch]$TestGui,
     [switch]$Help
 )
 
 Function Show-Usage {
-    Write-Host "Usage: Test-Openvpn.ps1 -Config <openvpn-config-file> -Ping <host> [-Openvpn <openvpn-exe>] [-Gui <openvpn-gui-exe>] [-TestCmdexe] [-TestService] [-TestGui] [-Help]"
+    Write-Host "Usage: Test-Openvpn.ps1 -Config <openvpn-config-file> -Ping <hosts> [-Openvpn <openvpn-exe>] [-Gui <openvpn-gui-exe>] [-TestCmdexe] [-TestService] [-TestRespawn] [-TestGui] [-Help]"
     Write-Host
     Write-Host "Parameters:"
     Write-Host "   -Openvpn     Path to openvpn.exe (defaults to C:\Program Files\OpenVPN\bin\openvpn.exe)"
@@ -21,6 +22,7 @@ Function Show-Usage {
     Write-Host "   -TestCmdexe  Test connection from the command-line"
     Write-Host "   -TestGui     Test OpenVPN-GUI"
     Write-Host "   -TestService Test openvpnserv2.exe"
+    Write-Host "   -TestRespawn Test if openvpnserv2 is able to respawn a dead connection properly"
     Write-Host "   -Help        Display this help"
     Write-Host
     Write-Host "Example: .\Test-Openvpn.ps1 -Config ""C:\Program Files\OpenVPN\config\company.ovpn"" -Ping 192.168.40.7 -TestCmdexe -TestService -TestGui"
@@ -165,9 +167,11 @@ Function Test-Service {
 
     Start-Service OpenVPNService
     Check-Connectivity "openvpnserv2" $ping
-    # Test if openvpn.exe is respawned correctly on forced kill
-    Stop-Openvpn
-    Check-connectivity "openvpnserv2-respawn" $ping
+
+    if ($TestRespawn) {
+        Stop-Openvpn
+        Check-connectivity "openvpnserv2-respawn" $ping
+    }
     Stop-Service OpenVPNService
 
     foreach ($move in $moved) {

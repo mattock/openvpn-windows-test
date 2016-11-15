@@ -11,7 +11,7 @@ Usage
 
 The main script tests only one VPN connection:
 ::
-  Usage: Test-Openvpn.ps1 -Config <openvpn-config-file> -Ping <hosts> [-Openvpn <openvpn-exe>] [-Gui <openvpn-gui-exe>] [-TestCmdexe] [-TestService] [-TestGui] [-Help]
+  Usage: Test-Openvpn.ps1 -Config <openvpn-config-file> -Ping <hosts> [-Openvpn <openvpn-exe>] [-Gui <openvpn-gui-exe>] [-TestCmdexe] [-TestService] [-TestRespawn] [-TestGui] [-Help]
   
   Parameters:
      -Openvpn     Path to openvpn.exe (defaults to C:\Program Files\OpenVPN\bin\openvpn.exe)
@@ -19,12 +19,14 @@ The main script tests only one VPN connection:
      -Config      Path to the OpenVPN configuration file
      -Ping        Target host(s) inside VPN to ping (should succeed). Separate multiple entries
                   with commas.
+     -Suspend     Test suspend and resume [UNIMPLEMENTED]
      -TestCmdexe  Test connection from the command-line
      -TestGui     Test OpenVPN-GUI
      -TestService Test openvpnserv2.exe
+     -TestRespawn Test if openvpnserv2 is able to respawn a dead connection properly
      -Help        Display this help
   
-  Example: .\Test-Openvpn -Config "C:\Program Files\OpenVPN\config\company.ovpn" -Ping 192.168.40.7 -TestCmdexe -TestService -TestGui
+  Example: .\Test-Openvpn.ps1 -Config "C:\Program Files\OpenVPN\config\company.ovpn" -Ping 192.168.40.7 -TestCmdexe -TestService -TestGui
 
 To verify that the connections do not succeed because of a bug or by accident,
 -Ping a fake IP that can only fail.
