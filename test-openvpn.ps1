@@ -95,8 +95,12 @@ Function Stop-Gui {
 }
 
 Function Stop-Openvpnservice {
-    Stop-Service OpenVPNService
-    Stop-Service OpenVPNServiceLegacy
+    foreach ($service in 'OpenVPNService', 'OpenVPNServiceLegacy') {
+        if (Get-Service -Erroraction Ignore $service) {
+            Stop-Service $service
+            (Get-Service $service).WaitForStatus('Stopped')
+        }
+    }
 }
 
 # Stop all openvpn-related processes
