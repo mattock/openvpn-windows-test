@@ -14,8 +14,8 @@ Function Show-Usage {
     Write-Host "Usage: Test-Openvpn.ps1 -Config <openvpn-config-file> -Ping <hosts> [-Openvpn <openvpn-exe>] [-Gui <openvpn-gui-exe>] [-TestCmdexe] [-TestService] [-TestRespawn] [-TestGui] [-Help]"
     Write-Host
     Write-Host "Parameters:"
-    Write-Host "   -Openvpn     Path to openvpn.exe (defaults to C:\Program Files\OpenVPN\bin\openvpn.exe)"
-    Write-Host "   -Gui         Path to openvpn-gui.exe (defaults to C:\Program Files\OpenVPN\bin\openvpn-gui.exe)"
+    Write-Host "   -Openvpn     Path to openvpn.exe (defaults to value in registry)"
+    Write-Host "   -Gui         Path to openvpn-gui.exe (as above, but openvpn.exe replaced with openvpn-gui.exe)"
     Write-Host "   -Config      Path to the OpenVPN configuration file"
     Write-Host "   -Ping        Target host(s) inside VPN to ping (should succeed). Separate multiple entries with commas."
     Write-Host "   -Suspend     Test suspend and resume [UNIMPLEMENTED]"
@@ -35,12 +35,16 @@ Function Verify-Path ([string]$mypath) {
     }
 }
 
+$exe_path = (Get-ItemProperty 'HKLM:\SOFTWARE\OpenVPN' -Name 'exe_path').exe_path
+
 if (! $Openvpn) {
-    $Openvpn = "C:\Program Files\OpenVPN\bin\openvpn.exe"
+    $Openvpn = $exe_path
 }
 
 if (! $Gui) {
-    $Gui = "C:\Program Files\OpenVPN\bin\openvpn-gui.exe"
+    # Assume openvpn-gui.exe is in the same directory as openvpn.exe
+    $exe_dir = $exe_path.TrimEnd('openvpn.exe')
+    $Gui = (Join-Path $exe_dir 'openvpn-gui.exe')
 }
 
 if (! ($Config -and $Ping) -or $Help) {
