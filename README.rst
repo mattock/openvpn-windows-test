@@ -6,10 +6,15 @@ can test OpenVPN in cmd.exe, OpenVPN-GUI and  openvpnserv2. Success and failure
 are based on simple ping tests to one or more hosts. A typical use-case for
 these scripts is smoke-testing an installer prior to a major release.
 
-Usage
-=====
+The Test-Installer.ps1 script currently tests how OpenVPN reinstalls and full
+uninstall/install cycles affect the service states. The script was motivated
+by the need to test the changes in openvpn-build pull request #80. Later the
+script can be extended to other things and integrated with Test-OpenVPN.ps1.
 
-The main script tests only one VPN connection:
+Using test-openvpn.ps1
+======================
+
+Test-Openvpn.ps1 tests only one VPN connection:
 ::
   Usage: Test-Openvpn.ps1 -Config <openvpn-config-file> -Ping <hosts> [-Openvpn <openvpn-exe>] [-Gui <openvpn-gui-exe>] [-TestCmdexe] [-TestService] [-TestRespawn] [-TestGui] [-Help]
   
@@ -51,29 +56,27 @@ to your (test) OpenVPN configuration file. This approach will only work when
 the script is launched with -TestCmdexe.
 
 Scope of the tests
-==================
+------------------
 
-OpenVPN inside cmd.exe
-----------------------
-
-Connect -> ping test -> disconnect
-
-OpenVPN GUI
------------
+OpenVPN inside cmd.exe:
 
 Connect -> ping test -> disconnect
 
-Openvpnserv2
-------------
+OpenVPN GUI:
+
+Connect -> ping test -> disconnect
+
+Openvpnserv2:
 
 Connect -> ping test -> kill openvpn -> openvpnserv2 restart openvpn -> ping test -> disconnect
 
 Warnings
-========
+--------
 
-The script brutally kills every openvpn.exe and openvpn-gui.exe process it
-finds at startup, as well as stops OpenVPNService. Similarly, when it is done
-with each test, it in general kills the processes without signaling them.
+The test-openvpn.ps1 script brutally kills every openvpn.exe and openvpn-gui.exe
+process it finds at startup, as well as stops OpenVPNService. Similarly, when it
+is done with each test, it in general kills the processes without signaling
+them.
 
 The openvpnserv2-based tests move irrelevant .ovpn files out of the way to the
 current working directory before launching the service. After the test the
@@ -82,3 +85,19 @@ some .ovpn files may have to be moved back manually.
 
 While this script seems to work fine, it can potentially cause issues. At
 minimum make sure that your VPN configurations are backed up.
+
+Using Test-Installer.ps1
+========================
+
+Test-Installer.ps1 is straightforward to use:
+::
+  Usage: Test-Installer.ps1 -Installer <installer-file> [-Verbose] [-TestUpgrade] [-TestCleanInstall] [-Help]
+  
+  Parameters:
+     -Installer        Path to the OpenVPN installer you wish to test
+     -Verbose          Show what is happening, even if there is nothing
+	                   noteworthy to report
+     -TestUpgrade      Test reinstalling on top of old installation
+     -TestCleanInstall Test full uninstall -> install cycle
+     -Help             Display this help
+	 
