@@ -11,6 +11,12 @@ uninstall/install cycles affect the service states. The script was motivated
 by the need to test the changes in openvpn-build pull request #80. Later the
 script can be extended to other things and integrated with Test-OpenVPN.ps1.
 
+The Test-Installer.ps1 script will use the management interface to cleanly shut
+down OpenVPN instances launched from cmd.exe. Similarly, in OpenVPNService-based
+tests, OpenVPN instances are cleanly shut down using exit-events implemented in
+OpenVPNService itself. However, there's currently no way to signal OpenVPN GUI
+to shut down itself, or the OpenVPN instances it manages.
+
 Using test-openvpn.ps1
 ======================
 
@@ -48,13 +54,6 @@ Note that right now OpenVPN might mess up IPv6 routes if OpenVPN instances are
 killed forcibly, as this script does in most cases. This can cause IPv6 ping
 tests to fail after an initial connection.
 
-If you want the script to signal openvpn.exe before killing after the test, add
-
-    management 127.0.0.1 58581
-
-to your (test) OpenVPN configuration file. This approach will only work when
-the script is launched with -TestCmdexe.
-
 Scope of the tests
 ------------------
 
@@ -74,9 +73,9 @@ Warnings
 --------
 
 The test-openvpn.ps1 script brutally kills every openvpn.exe and openvpn-gui.exe
-process it finds at startup, as well as stops OpenVPNService. Similarly, when it
-is done with each test, it in general kills the processes without signaling
-them.
+process it finds at startup, as well as stops OpenVPNService. As described
+above, in OpenVPN GUI tests OpenVPN GUI and the OpenVPN instances it manages
+are killled without signaling.
 
 The openvpnserv2-based tests move irrelevant .ovpn files out of the way to the
 current working directory before launching the service. After the test the
@@ -96,7 +95,7 @@ Test-Installer.ps1 is straightforward to use:
   Parameters:
      -Installer        Path to the OpenVPN installer you wish to test
      -Verbose          Show what is happening, even if there is nothing
-	                   noteworthy to report
+                       noteworthy to report
      -TestUpgrade      Test reinstalling on top of old installation
      -TestCleanInstall Test full uninstall -> install cycle
      -Help             Display this help
