@@ -31,12 +31,6 @@ if (! (Test-Path $installer -PathType leaf)) {
     Show-Usage
 }
 
-Function Write-IfVerbose($message) {
-    if ($Verbose) {
-        Write-Host $message
-    }
-}
-
 Function Get-ServiceStates {
     $service_states = New-Object –TypeName PSObject
     $services = "OpenVPNService", "OpenVPNServiceInteractive", "OpenVPNServiceLegacy"
@@ -48,7 +42,7 @@ Function Get-ServiceStates {
 }
 
 function Run-Installer($installer) {
-    Write-IfVerbose "Running OpenVPN installer"
+    Write-Verbose "Running OpenVPN installer"
 
     & $installer /S
 
@@ -62,11 +56,11 @@ function Run-Installer($installer) {
     while (Get-Process -ProcessName $processname -ErrorAction Ignore) {
         Start-Sleep -Seconds 1
     }
-    Write-IfVerbose "Install finished"
+    Write-Verbose "Install finished"
 }
 
 function Run-Uninstaller {
-    Write-IfVerbose "Running OpenVPN uninstaller"
+    Write-Verbose "Running OpenVPN uninstaller"
 
     # Uninstaller seems to fork immediately, so launching it with
     #
@@ -80,7 +74,7 @@ function Run-Uninstaller {
     # Due to above just sleep a while
     Start-Sleep -Seconds 7
 
-    Write-IfVerbose "Uninstall finished"
+    Write-Verbose "Uninstall finished"
 }
 
 function Compare-ServiceStates($service_states_before,$service_states_after) {
@@ -103,7 +97,7 @@ function Compare-ServiceStates($service_states_before,$service_states_after) {
     }
 
     if ($no_changes) {
-        Write-IfVerbose "No changes during install"
+        Write-Verbose "No changes during install"
     }
 
 }
