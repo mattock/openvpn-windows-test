@@ -97,7 +97,7 @@ Function Stop-Openvpn {
 }
 
 Function Stop-Gui {
-    Stop-Generic "openvpn-gui"
+    & $Gui --command disconnect_all
 }
 
 Function Stop-Openvpnservice {
@@ -155,7 +155,6 @@ Function Test-Cmdexe {
 Function Test-Gui {
     & $gui --connect "${configname}"
     Check-Connectivity "gui" $ping
-    Stop-Openvpn
     Stop-Gui
 
 }
